@@ -1,0 +1,18 @@
+# node_modules を無視
+frontend/node_modules/
+
+# Laravelの vendor を無視
+backend/vendor/
+
+# キャッシュファイルやログ
+*.log
+*.cache
+*.env
+
+# フロントエンドのビルド成果物
+frontend/dist/
+front-end/build/
+
+# IDE関連のファイル
+.vscode/
+.idea/
