@@ -9,6 +9,7 @@ import Register from "./pages/Register";
 import AdminDashboard from "./components/AdminDashboard"; // 追加
 
 // 保護されたルートのラッパーコンポーネント
+
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
 
