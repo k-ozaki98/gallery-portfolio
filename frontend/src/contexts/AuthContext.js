@@ -62,18 +62,21 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     try {
       const token = localStorage.getItem("token");
-      await fetch("http://localhost:8000/api/logout", {
+      const response = await fetch("http://localhost:8000/api/logout", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
         },
       });
+
+      if (response.ok) {
+        localStorage.removeItem("token");
+        setUser(null);
+      }
     } catch (error) {
-      console.error("Logout error:", error);
-    } finally {
-      localStorage.removeItem("token");
-      setUser(null);
+      console.error("ログアウトエラー:", error);
+      throw error; 
     }
   };
 

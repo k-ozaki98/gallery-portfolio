@@ -1,9 +1,19 @@
 // src/components/Navbar.js
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   return (
     <nav className="bg-gray-800 shadow-lg">
@@ -28,7 +38,7 @@ export default function Navbar() {
                   </Link>
                 )}
                 <button
-                  onClick={logout}
+                  onClick={handleLogout}
                   className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
                 >
                   ログアウト
