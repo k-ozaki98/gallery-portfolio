@@ -163,9 +163,9 @@ function App() {
       </div>
 
       {/* メインコンテンツ */}
-      <div className="container mx-auto px-4 py-8 flex">
+      <div className=" mx-auto px-4 py-8 flex">
         {/* メインコンテンツエリア */}
-        <div className="flex-grow ml-auto max-w-5xl">
+        <div className="flex-grow ml-auto max-w-4xl">
           <div className="flex justify-end mb-8">
           <button
             onClick={() => setIsModalOpen(true)}

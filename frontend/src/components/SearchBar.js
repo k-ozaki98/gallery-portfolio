@@ -28,11 +28,11 @@ export default function SearchBar({ value, onChange, onFilterChange }) {
   ];
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-4 mb-8">
-      <h2 className="text-lg font-semibold text-gray-800 mb-4">フィルター</h2>
-      <div className="space-y-3">
+    <div className="bg-white rounded-lg shadow-lg mb-8">
+      <h2 className="text-lg font-semibold text-white py-2 px-4 bg-gray-800">検索</h2>
+      <div className="space-y-3 py-4">
         {/* キーワード検索 */}
-        <div>
+        <div className="px-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             キーワード検索
           </label>
@@ -45,7 +45,7 @@ export default function SearchBar({ value, onChange, onFilterChange }) {
         </div>
 
         {/* 業界フィルター */}
-        <div>
+        <div className="px-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             業界
           </label>
@@ -64,7 +64,7 @@ export default function SearchBar({ value, onChange, onFilterChange }) {
         </div>
 
         {/* 経験年数フィルター */}
-        <div>
+        <div className="px-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             経験年数
           </label>
@@ -83,7 +83,7 @@ export default function SearchBar({ value, onChange, onFilterChange }) {
         </div>
 
         {/* カラーフィルター */}
-        <div>
+        <div className="px-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             メインカラー
           </label>

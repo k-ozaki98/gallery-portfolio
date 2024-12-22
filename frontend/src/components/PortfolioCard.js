@@ -75,11 +75,14 @@ export default function PortfolioCard({ portfolio, onLike, onComment }) {
 
 
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="bg-white shadow-lg overflow-hidden">
       {/* 見出し */}
       <h3 className="text-base font-bold p-2 bg-gray-100">{portfolio.title}</h3>
       {/* プレビュー画像エリア */}
-      <div className="w-full h-48 overflow-hidden">
+      <a
+        href={portfolio.url}
+        className="w-full h-48 overflow-hidden block hover:opacity-80 transition-opacity"
+      >
         {ogpData?.image ? (
           <img
             src={ogpData.image}
@@ -91,25 +94,25 @@ export default function PortfolioCard({ portfolio, onLike, onComment }) {
             <span className="text-gray-400">No preview available</span>
           </div>
         )}
-      </div>
+      </a>
 
       {/* コンテンツエリア */}
       <div className="">
 
 
-        <p className="text-gray-600 p-4 text-ms">
+        <p className="text-gray-600 p-4 text-ms bg-gray-50">
           {portfolio.description || ogpData?.description || "説明なし"}
         </p>
 
         <div className="flex flex-col border-t">
-          <div className="bg-gray-50 py-2 px-4 rounded">
+          <div className="bg-gray-100 py-2 px-4 rounded">
             <p className="font-medium text-sm"><span className="text-gray-500">業界:</span>{portfolio.industry}</p>
           </div>
-          <div className="bg-gray-50 p-2 px-4 rounded border-t">
+          <div className="bg-gray-100 p-2 px-4 rounded border-t">
             <p className="font-medium text-sm"><span className="text-gray-500">経験年数:</span>{portfolio.experience}</p>
             
           </div>
-          <div className="bg-gray-50 p-2 px-4 rounded border-t">
+          <div className="bg-gray-100 p-2 px-4 rounded border-t">
             <p className="font-medium text-sm"><span className="text-xs text-gray-500">メインカラー:</span>{portfolio.color}</p>
             
           </div>
@@ -119,14 +122,6 @@ export default function PortfolioCard({ portfolio, onLike, onComment }) {
           <span className="text-sm text-gray-500">
             {new Date(portfolio.created_at).toLocaleDateString()}
           </span>
-          <a
-            href={portfolio.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
-          >
-            サイトを見る
-          </a>
         </div>
       </div>
 
