@@ -3,7 +3,7 @@
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PortfolioController;
-use App\Http\Controllers\Admin\PortfolioController as AdminPortfolioController;
+use App\Http\Controllers\Admin\AdminPortfolioController as AdminPortfolioController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

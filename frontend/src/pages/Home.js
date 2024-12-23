@@ -5,11 +5,15 @@ import PortfolioCard from "../components/PortfolioCard.js";
 import PortfolioForm from "../components/PortfolioForm.js";
 import "../App.css";
 import { useAuth } from "../contexts/AuthContext.js";
+import Pagination from "../components/Pagination.js";
+
+const ITEMS_PER_PAGE = 10;
 
 function App() {
   const [portfolios, setPortfolios] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
     keyword: "",
     industry: "",
@@ -115,6 +119,7 @@ function App() {
       ...prev,
       [filterType]: value,
     }));
+    setCurrentPage(1);
   };
 
   const filteredPortfolios = Array.isArray(portfolios)
@@ -148,10 +153,23 @@ function App() {
       })
     : [];
 
+    const paginatedPortfolios = filteredPortfolios.slice(
+      (currentPage - 1) * ITEMS_PER_PAGE,
+      currentPage * ITEMS_PER_PAGE
+    );
+
+    const handlePageChange = (page) => {
+      setCurrentPage(page);
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    };
+
   return (
     <div className="min-h-screen bg-gray-200">
       {/* ヘッダー部分 */}
-      <div className="bg-gray-100">
+      <div className="bg-gray-100 mb-8">
         <div className="container mx-auto px-4 py-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-4">ポートフォリオサイトギャラリー</h1>
           <p className="text-sm">
@@ -163,52 +181,45 @@ function App() {
       </div>
 
       {/* メインコンテンツ */}
-      <div className=" mx-auto px-4 py-8 flex">
-        {/* メインコンテンツエリア */}
-        <div className="flex-grow ml-auto max-w-4xl">
-          <div className="flex justify-end mb-8">
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="fixed bottom-8 right-8 bg-gradient-to-r from-blue-500 to-indigo-600 text-white w-14 h-14 rounded-full shadow-lg hover:shadow-xl flex items-center justify-center transition-all duration-200 z-50"
-            aria-label="新規投稿"
-          >
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              className="h-8 w-8" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M12 4v16m8-8H4" 
-              />
-            </svg>
-          </button>
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-col lg:flex-row gap-8 max-w-[1400px] mx-auto"> 
+          {/* メインコンテンツエリア */}
+          <div className="lg:w-[70%] mb-16">
+            {/* ポートフォリオカード */}
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 pb-8">
+              {paginatedPortfolios.map((portfolio) => (
+                <PortfolioCard
+                  key={portfolio.id}
+                  portfolio={portfolio}
+                  onLike={handleLike}
+                  onComment={handleComment}
+                  currentUserId={user.id}
+                />
+              ))}
+            </div>
+
+            {/* ページネーション */}
+            <Pagination
+              total={filteredPortfolios.length}
+              itemsPerPage={ITEMS_PER_PAGE}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+            />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {filteredPortfolios.map((portfolio) => (
-              <PortfolioCard
-                key={portfolio.id}
-                portfolio={portfolio}
-                onLike={handleLike}
-                onComment={handleComment}
+          {/* 検索バー */}
+          <div className="lg:w-[30%]">
+            <div className="relative">
+              <SearchBar
+                value={filters.keyword}
+                onChange={(value) => handleFilterChange("keyword", value)}
+                onFilterChange={handleFilterChange}
+                filters={filters}
               />
-            ))}
+            </div>
           </div>
         </div>
 
-        {/* 右側の検索バー（固定） */}
-        <div className="w-80 ml-8 sticky top-4 self-start">
-          <SearchBar
-            value={filters.keyword}
-            onChange={(value) => handleFilterChange("keyword", value)}
-            onFilterChange={handleFilterChange}
-          />
-        </div>
       </div>
 
       {/* モーダル */}

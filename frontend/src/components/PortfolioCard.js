@@ -2,8 +2,7 @@ import { Heart, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import CommentModal from "./CommentModal";
 
-// src/components/PortfolioCard.js
-export default function PortfolioCard({ portfolio, onLike, onComment }) {
+export default function PortfolioCard({ portfolio, onLike, onComment, currentUserId }) {
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
 
   const handleLike = async () => {
@@ -68,6 +67,14 @@ export default function PortfolioCard({ portfolio, onLike, onComment }) {
 
   const likesCount = getLikesCount();
 
+  const isLikedByMe = Array.isArray(portfolio.likes) && portfolio.likes.some(like => like.user_id === currentUserId);
+
+  const truncateText = (text, maxLength) => {
+    if (!text) return "";
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength) + "...";
+  };
+
 
   return (
     <div className="bg-white shadow-lg overflow-hidden">
@@ -92,12 +99,35 @@ export default function PortfolioCard({ portfolio, onLike, onComment }) {
         )}
       </a>
 
+      <div className="px-4 py-3 border-t flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={handleLike}
+            className="flex items-center space-x-1 text-gray-600 hover:text-red-500 transition-colors"
+          >
+            <Heart
+              className={`w-5 h-5 ${
+                isLikedByMe ? "fill-red-500 text-red-500" : ""  
+              }`}
+            />
+            <span className="text-sm font-medium">{likesCount}</span>
+          </button>
+          <button
+            onClick={() => setIsCommentModalOpen(true)} 
+            className="flex items-center space-x-1 text-gray-600 hover:text-blue-500 transition-colors"
+          >
+            <MessageCircle className="w-5 h-5" />
+            <span className="text-sm font-medium">{getCommentsCount()}</span>
+          </button>
+        </div>
+      </div>
+
       {/* コンテンツエリア */}
       <div className="">
 
 
-        <p className="text-gray-600 p-4 text-ms bg-gray-50">
-          {portfolio.description || ogpData?.description || "説明なし"}
+        <p className="text-gray-600 p-4 text-ms bg-gray-50 h-32 overflow-hidden">
+          {truncateText(portfolio.description || ogpData?.description || "説明なし", 100)}
         </p>
 
         <div className="flex flex-col border-t">
@@ -113,36 +143,9 @@ export default function PortfolioCard({ portfolio, onLike, onComment }) {
             
           </div>
         </div>
-
-        <div className="flex justify-between items-center border-t py-2 px-4">
-          <span className="text-sm text-gray-500">
-            {new Date(portfolio.created_at).toLocaleDateString()}
-          </span>
-        </div>
       </div>
 
-      <div className="px-4 py-3 border-t flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <button
-            onClick={handleLike}
-            className="flex items-center space-x-1 text-gray-600 hover:text-red-500 transition-colors"
-          >
-            <Heart
-              className={`w-5 h-5 ${
-                likesCount > 0 ? "fill-red-500 text-red-500" : ""
-              }`}
-            />
-            <span className="text-sm font-medium">{likesCount}</span>
-          </button>
-          <button
-            onClick={() => setIsCommentModalOpen(true)} 
-            className="flex items-center space-x-1 text-gray-600 hover:text-blue-500 transition-colors"
-          >
-            <MessageCircle className="w-5 h-5" />
-            <span className="text-sm font-medium">{getCommentsCount()}</span>
-          </button>
-        </div>
-      </div>
+      
 
       {isCommentModalOpen && (
         <CommentModal
