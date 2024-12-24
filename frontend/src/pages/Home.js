@@ -88,6 +88,10 @@ function App() {
     }
   };
 
+  const updatePortfolios = () => {
+    fetchPortfolios();
+  };
+
   const handleSubmit = async (portfolioData) => {
     try {
       const response = await fetch("http://localhost:8000/api/portfolios", {
@@ -165,6 +169,7 @@ function App() {
         behavior: 'smooth'
       });
     };
+
 
   return (
     <div className="min-h-screen bg-gray-200">

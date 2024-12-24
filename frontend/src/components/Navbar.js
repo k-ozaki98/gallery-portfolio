@@ -1,12 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useState, useRef, useEffect } from "react";
+import PortfolioForm from "./PortfolioForm";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // ドロップダウン外のクリックを検知して閉じる
   useEffect(() => {
@@ -25,6 +27,31 @@ export default function Navbar() {
       navigate('/login');
     } catch (error) {
       console.error('Logout failed:', error);
+    }
+  };
+
+  const handleSubmit = async (portfolioData) => {
+    try {
+      const response = await fetch("http://localhost:8000/api/portfolios", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(portfolioData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(data.message);
+        setIsModalOpen(false);
+        window.location.reload(); // リロードで一覧を更新
+      } else {
+        console.error("Server Error:", data.error);
+      }
+    } catch (error) {
+      console.error("Error creating portfolio:", error);
     }
   };
 
@@ -50,20 +77,20 @@ export default function Navbar() {
             {user ? (
               <>
                 {user.is_admin && (
-                  <Link 
-                    to="/admin" 
+                  <Link
+                    to="/admin"
                     className="text-sm text-gray-300 hover:text-white px-3 py-1.5 rounded-md hover:bg-gray-800"
                   >
                     管理画面
                   </Link>
                 )}
                 {/* 投稿ボタン */}
-                <Link 
-                  to="/new"
+                <button
+                  onClick={() => setIsModalOpen(true)}
                   className="text-sm bg-blue-600 text-white px-3 py-1.5 rounded-md hover:bg-blue-700"
                 >
                   投稿する
-                </Link>
+                </button>
                 {/* ユーザードロップダウン */}
                 <div className="relative" ref={dropdownRef}>
                   <button
@@ -71,16 +98,23 @@ export default function Navbar() {
                     className="flex items-center space-x-2 text-sm text-gray-300 hover:text-white px-3 py-1.5 rounded-md hover:bg-gray-800"
                   >
                     <span>{user.name}</span>
-                    <svg 
-                      className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} 
-                      fill="none" 
-                      stroke="currentColor" 
+                    <svg
+                      className={`w-4 h-4 transition-transform ${
+                        isDropdownOpen ? "rotate-180" : ""
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
                       viewBox="0 0 24 24"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
                     </svg>
                   </button>
-                  
+
                   {/* ドロップダウンメニュー */}
                   {isDropdownOpen && (
                     <div className="absolute right-0 mt-2 w-48 py-2 bg-gray-900 rounded-md shadow-xl border border-gray-800">
@@ -108,8 +142,8 @@ export default function Navbar() {
               </>
             ) : (
               <div className="flex items-center space-x-2">
-                <Link 
-                  to="/login" 
+                <Link
+                  to="/login"
                   className="text-sm text-gray-300 hover:text-white px-3 py-1.5 rounded-md hover:bg-gray-800"
                 >
                   ログイン
@@ -125,6 +159,14 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+
+      {/* モーダル */}
+      {isModalOpen && (
+        <PortfolioForm
+          onSubmit={handleSubmit}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
     </nav>
   );
 }
